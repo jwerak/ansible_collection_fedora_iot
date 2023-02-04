@@ -1,0 +1,80 @@
+---
+# Automated OS update
+- name: Configure rpm-ostreed.conf
+  ansible.builtin.template:
+    src: rpm-ostreed.conf.j2
+    mode: 0600
+    dest: /etc/rpm-ostreed.conf
+  register: rpm_ostreed_conf
+  notify: Reload rpm-ostreed
+  tags:
+    - ostreed
+
+- name: Enable rpm-ostreed-automatic.timer
+  ansible.builtin.systemd:
+    name: rpm-ostreed-automatic.timer
+    state: started
+    enabled: true
+  tags:
+    - ostreed
+
+# It restarts after each boot which is weird,
+# but I don't know how to create timer with onCalendar which doesn't trigger on each boot!!!
+# - name: Ensure sched-reboot.service is created
+#   template:
+#     src: sched-reboot.service.j2
+#     dest: /etc/systemd/system/sched-reboot.service
+#   notify: SystemD reload
+
+# - name: Ensure sched-reboot.timer is created
+#   template:
+#     src: sched-reboot.timer.j2
+#     dest: /etc/systemd/system/sched-reboot.timer
+#   notify: SystemD reload
+
+# - name: Enable sched-reboot.timer
+#   systemd:
+#     name: sched-reboot.timer
+#     state: started
+#     enabled: yes
+
+# Auto update podman services with autoupdate label
+- name: Ensure podman-auto-update.service is created
+  ansible.builtin.template:
+    src: podman-auto-update.service.j2
+    mode: 0600
+    dest: /etc/systemd/system/podman-auto-update.service
+  notify: SystemD reload
+
+- name: Ensure podman-auto-update.timer is created
+  ansible.builtin.template:
+    src: podman-auto-update.timer.j2
+    mode: 0600
+    dest: /etc/systemd/system/podman-auto-update.timer
+  notify: SystemD reload
+
+- name: Enable podman-auto-update.timer
+  ansible.builtin.systemd:
+    name: podman-auto-update.timer
+    state: started
+    enabled: true
+
+- name: Ensure podman-prune.service is created
+  ansible.builtin.template:
+    src: podman-prune.service.j2
+    mode: 0600
+    dest: /etc/systemd/system/podman-prune.service
+  notify: SystemD reload
+
+- name: Ensure podman-prune.timer is created
+  ansible.builtin.template:
+    src: podman-prune.timer.j2
+    mode: 0600
+    dest: /etc/systemd/system/podman-prune.timer
+  notify: SystemD reload
+
+- name: Enable podman-prune.timer
+  ansible.builtin.systemd:
+    name: podman-prune.timer
+    state: started
+    enabled: true

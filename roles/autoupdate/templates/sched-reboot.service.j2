@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Scheduled Reboot
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl reboot

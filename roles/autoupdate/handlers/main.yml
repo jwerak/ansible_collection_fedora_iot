@@ -1,0 +1,8 @@
+---
+- name: SystemD reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Reload rpm-ostreed
+  ansible.builtin.command:
+    command: rpm-ostree reload

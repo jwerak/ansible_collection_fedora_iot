@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Reboot Scheduling.
+
+[Timer]
+OnCalendar=Sun 01:30:00
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Schedule prunig of podman images
+
+[Timer]
+OnCalendar=Sun 00:30:00
+
+[Install]
+WantedBy=timers.target

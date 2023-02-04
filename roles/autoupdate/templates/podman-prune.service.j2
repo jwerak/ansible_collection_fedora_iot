@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Scheduled Podman images update
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/podman auto-update
