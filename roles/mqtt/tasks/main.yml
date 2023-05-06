@@ -1,0 +1,33 @@
+---
+# tasks file for mqtt
+
+- name: Create mqtt data directory
+  ansible.builtin.file:
+    path: "{{ mqtt_path_datadir }}"
+    state: directory
+    mode: "0755"
+
+- name: Create systemd service unit mqtt
+  containers.podman.podman_container:
+    name: "{{ __mqtt_systemd_unit_name }}"
+    image: "{{ mqtt_container_image }}"
+    command:
+      - mosquitto
+      - -c
+      - /mosquitto-no-auth.conf
+    generate_systemd:
+      new: true
+      path: "{{ __mqtt_systemd_path }}"
+      container_prefix: "{{ mqtt_container_prefix }}"
+      restart_policy: on-failure
+    state: present
+    network: "{{ mqtt_networks | default(false) | ternary(mqtt_networks, omit) }}"
+    rm: false
+    volumes: "{{ __mqtt_container_volumes }}"
+  notify: Reload systemd daemon
+
+- name: Start MQTT service
+  ansible.builtin.systemd:
+    name: "{{ mqtt_container_prefix }}-{{ __mqtt_systemd_unit_name }}"
+    state: started
+    enabled: true

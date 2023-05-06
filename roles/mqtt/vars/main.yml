@@ -1,0 +1,8 @@
+---
+# vars file for mqtt
+__mqtt_systemd_unit_name: mqtt
+__mqtt_systemd_container_prefix: mqtt
+__mqtt_container_volumes:
+  - "{{ mqtt_path_datadir }}:/mosquitto:Z"
+
+__mqtt_systemd_path: /etc/systemd/system
