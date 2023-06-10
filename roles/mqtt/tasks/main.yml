@@ -9,12 +9,13 @@
 
 - name: Create systemd service unit mqtt
   containers.podman.podman_container:
-    name: "{{ __mqtt_systemd_unit_name }}"
+    name: "{{ __mqtt_container_name }}"
     image: "{{ mqtt_container_image }}"
     command:
       - mosquitto
       - -c
       - /mosquitto-no-auth.conf
+    ports: "{{ __mqtt_container_ports }}"
     generate_systemd:
       new: true
       path: "{{ __mqtt_systemd_path }}"
@@ -28,6 +29,16 @@
 
 - name: Start MQTT service
   ansible.builtin.systemd:
-    name: "{{ mqtt_container_prefix }}-{{ __mqtt_systemd_unit_name }}"
+    name: "{{ mqtt_container_prefix }}-{{ __mqtt_container_name }}"
     state: started
     enabled: true
+
+- name: Enable ssh and http port
+  ansible.posix.firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+  loop:
+    - 2181/tcp
+    - 2888/tcp
+    - 3888/tcp
