@@ -1,0 +1,10 @@
+---
+# defaults file for zigbee2mqtt
+zigbee2mqtt_path_datadir: /opt/zigbee2mqtt/zigbee2mqtt-data
+zigbee2mqtt_http_port: 8080
+zigbee2mqtt_timezone: Europe/Prague
+zigbee2mqtt_zigbee_device: /dev/ttyACM0
+zigbee2mqtt_container_image: docker.io/koenkk/zigbee2mqtt
+zigbee2mqtt_container_prefix: container
+# zigbee2mqtt_networks: ["iot"]
+zigbee2mqtt_networks: [""]

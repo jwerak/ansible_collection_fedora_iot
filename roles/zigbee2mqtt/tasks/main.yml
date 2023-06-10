@@ -1,0 +1,35 @@
+---
+# tasks file for zigbee2zigbee2mqtt
+- name: Create zigbee2mqtt data directory
+  ansible.builtin.file:
+    path: "{{ zigbee2mqtt_path_datadir }}"
+    state: directory
+    mode: "0755"
+
+- name: Create systemd service unit zigbee2mqtt
+  containers.podman.podman_container:
+    name: "{{ __zigbee2mqtt_container_name }}"
+    image: "{{ zigbee2mqtt_container_image }}"
+    command:
+      - mosquitto
+      - -c
+      - /mosquitto-no-auth.conf
+    ports: "{{ __zigbee2mqtt_container_ports }}"
+    env: "{{ __zigbee2mqtt_container_environments }}"
+    generate_systemd:
+      new: true
+      path: "{{ __zigbee2mqtt_systemd_path }}"
+      container_prefix: "{{ zigbee2mqtt_container_prefix }}"
+      restart_policy: on-failure
+    state: present
+    network: "{{ zigbee2mqtt_networks | default(false) | ternary(zigbee2mqtt_networks, omit) }}"
+    rm: false
+    device: "{{ __zigbee2mqtt_container_devices }}"
+    volumes: "{{ __zigbee2mqtt_container_volumes }}"
+  notify: Reload systemd daemon
+
+- name: Start zigbee2mqtt service
+  ansible.builtin.systemd:
+    name: "{{ zigbee2mqtt_container_prefix }}-{{ __zigbee2mqtt_container_name }}"
+    state: started
+    enabled: true

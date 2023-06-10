@@ -1,0 +1,14 @@
+---
+# vars file for zigbee2zigbee2mqtt
+__zigbee2mqtt_container_name: zigbee2mqtt
+# __zigbee2mqtt_systemd_container_prefix: zigbee2mqtt
+__zigbee2mqtt_container_volumes:
+  - "{{ zigbee2mqtt_path_datadir }}:/app/data:Z"
+  - "/run/udev:/run/udev:ro,z"
+__zigbee2mqtt_container_ports:
+  - "{{ zigbee2mqtt_http_port }}:8080"
+__zigbee2mqtt_container_environments:
+  TZ: "{{ zigbee2mqtt_timezone }}"
+__zigbee2mqtt_container_devices:
+  - "{{ zigbee2mqtt_zigbee_device }}"
+__zigbee2mqtt_systemd_path: /etc/systemd/system
