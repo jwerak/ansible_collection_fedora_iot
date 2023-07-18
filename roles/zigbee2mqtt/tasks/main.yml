@@ -10,12 +10,9 @@
   containers.podman.podman_container:
     name: "{{ __zigbee2mqtt_container_name }}"
     image: "{{ zigbee2mqtt_container_image }}"
-    command:
-      - mosquitto
-      - -c
-      - /mosquitto-no-auth.conf
     ports: "{{ __zigbee2mqtt_container_ports }}"
     env: "{{ __zigbee2mqtt_container_environments }}"
+    recreate: true
     generate_systemd:
       new: true
       path: "{{ __zigbee2mqtt_systemd_path }}"
