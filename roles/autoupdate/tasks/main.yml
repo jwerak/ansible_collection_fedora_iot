@@ -3,7 +3,7 @@
 - name: Configure rpm-ostreed.conf
   ansible.builtin.template:
     src: rpm-ostreed.conf.j2
-    mode: 0600
+    mode: "0600"
     dest: /etc/rpm-ostreed.conf
   register: rpm_ostreed_conf
   notify: Reload rpm-ostreed
@@ -42,14 +42,14 @@
 - name: Ensure podman-auto-update.service is created
   ansible.builtin.template:
     src: podman-auto-update.service.j2
-    mode: 0600
+    mode: "0600"
     dest: /etc/systemd/system/podman-auto-update.service
   notify: SystemD reload
 
 - name: Ensure podman-auto-update.timer is created
   ansible.builtin.template:
     src: podman-auto-update.timer.j2
-    mode: 0600
+    mode: "0600"
     dest: /etc/systemd/system/podman-auto-update.timer
   notify: SystemD reload
 
@@ -62,14 +62,14 @@
 - name: Ensure podman-prune.service is created
   ansible.builtin.template:
     src: podman-prune.service.j2
-    mode: 0600
+    mode: "0600"
     dest: /etc/systemd/system/podman-prune.service
   notify: SystemD reload
 
 - name: Ensure podman-prune.timer is created
   ansible.builtin.template:
     src: podman-prune.timer.j2
-    mode: 0600
+    mode: "0600"
     dest: /etc/systemd/system/podman-prune.timer
   notify: SystemD reload
 

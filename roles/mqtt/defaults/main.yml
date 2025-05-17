@@ -1,7 +1,6 @@
 ---
 # defaults file for mqtt
 mqtt_container_image: docker.io/library/eclipse-mosquitto:2.0
-mqtt_container_prefix: container
 mqtt_path_datadir: "/opt/mqtt/mosquitto-data"
 # mqtt_networks: ["iot"] # nondefault networks need to be present
 mqtt_networks: [""]

@@ -7,7 +7,8 @@
     state: directory
     mode: "0755"
 
-- name: Create systemd service unit mqtt
+- name: Create a mqtt Quadlet
+  notify: Reload systemd daemon
   containers.podman.podman_container:
     name: "{{ __mqtt_container_name }}"
     image: "{{ mqtt_container_image }}"
@@ -15,25 +16,27 @@
       - mosquitto
       - -c
       - /mosquitto-no-auth.conf
+    state: quadlet
+    device: "/dev/sda:/dev/xvda:rwm"
     ports: "{{ __mqtt_container_ports }}"
-    generate_systemd:
-      new: true
-      path: "{{ __mqtt_systemd_path }}"
-      container_prefix: "{{ mqtt_container_prefix }}"
-      restart_policy: on-failure
-    state: present
-    network: "{{ mqtt_networks | default(false) | ternary(mqtt_networks, omit) }}"
-    rm: false
     volumes: "{{ __mqtt_container_volumes }}"
-  notify: Reload systemd daemon
+    quadlet_options:
+      - "AutoUpdate=registry"
+      - "Pull=newer"
+      - |
+        [Install]
+        WantedBy=default.target
+
+- name: Invoke handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Start MQTT service
   ansible.builtin.systemd:
-    name: "{{ mqtt_container_prefix }}-{{ __mqtt_container_name }}"
+    name: "{{ __mqtt_container_name }}"
     state: started
     enabled: true
 
-- name: Enable ssh and http port
+- name: Enable mosquitto ports
   ansible.posix.firewalld:
     port: "{{ item }}"
     permanent: true
